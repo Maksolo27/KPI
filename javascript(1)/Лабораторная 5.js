@@ -1,7 +1,7 @@
 const obj = { n: 23, b: 34 }
 
 Object.prototype.map = function (fn) {
-    let obj = this
+    const obj = this
     let result = {}
     for (let i of Object.keys(obj)) {
         result[i] = (fn(this[i]))
