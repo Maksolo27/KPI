@@ -1,0 +1,4 @@
+﻿  ConsoleApplication15.cpp
+C:\Users\maxim\source\repos\ConsoleApplication15\ConsoleApplication15\ConsoleApplication15.cpp(12,46): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\Users\maxim\source\repos\ConsoleApplication15\ConsoleApplication15\ConsoleApplication15.cpp(17,23): warning C4305: инициализация: усечение из "double" в "float"
+  ConsoleApplication15.vcxproj -> C:\Users\maxim\source\repos\ConsoleApplication15\Debug\ConsoleApplication15.exe

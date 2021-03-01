@@ -1,0 +1,5 @@
+﻿  ConsoleApplication17.cpp
+C:\Users\maxim\source\repos\ConsoleApplication17\ConsoleApplication17\ConsoleApplication17.cpp(7,29): warning C4305: инициализация: усечение из "double" в "float"
+C:\Users\maxim\source\repos\ConsoleApplication17\ConsoleApplication17\ConsoleApplication17.cpp(8,27): warning C4305: инициализация: усечение из "double" в "float"
+C:\Users\maxim\source\repos\ConsoleApplication17\ConsoleApplication17\ConsoleApplication17.cpp(14,41): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+  ConsoleApplication17.vcxproj -> C:\Users\maxim\source\repos\ConsoleApplication17\Debug\ConsoleApplication17.exe
