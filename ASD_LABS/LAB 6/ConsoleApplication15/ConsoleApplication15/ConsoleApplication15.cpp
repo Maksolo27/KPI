@@ -1,6 +1,14 @@
 ﻿#include <stdio.h>
-#include <math.h>
 #define x 0.9
+
+
+float pow(float n, int m) {
+	float result = 1;
+	for (int c = 0; c < m; c++) {
+		result *= n;
+	}
+	return result;
+}
 
 float RecurseSum(float prevF, float* sum, int* i) {
 	if (*i > 1) {

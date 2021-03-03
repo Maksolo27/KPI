@@ -1,7 +1,14 @@
 ﻿#include <stdio.h>
-#include <math.h>
-#define x 0.5
+#define x 0.9
 
+
+float pow(float n, int m) {
+	float result = 1;
+	for (int c = 0; c < m; c++) {
+		result *= n;
+	}
+	return result;
+}
 
 float RecurseSum(int length, float prevF, float sum, int i) {
 	i++;
@@ -20,5 +27,5 @@ int main()
 	printf_s("Enter your number: \n");
 	scanf_s("%d", &input);
 	sum = RecurseSum(input, F, sum, 1);
-	printf_s("Sum =  %f \n", sum * -1);
+	printf_s("Sum =  %f \n", sum);
 }
