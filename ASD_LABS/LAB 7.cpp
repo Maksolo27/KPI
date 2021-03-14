@@ -1,13 +1,12 @@
-﻿
 #include <stdio.h>
 #include <stdlib.h>
 #include <malloc.h>
+
 
 typedef struct Node {
     int value;
     struct Node* next;
 } Node;
-
 
 void push(Node** head, int data) {
     Node* tmp = (Node*)malloc(sizeof(Node));
@@ -29,6 +28,18 @@ int pop(Node** head) {
     free(prev);
     return val;
 }
+
+
+Node* getNextHead(Node* head, int n) {
+    int counter = 0;
+    while (counter < n && head) {
+        head = head->next;
+        counter++;
+    }
+    return head;
+}
+
+
 Node* getLast(Node* head) {
     if (head == NULL) {
         return NULL;
@@ -39,23 +50,66 @@ Node* getLast(Node* head) {
     return head;
 }
 
-void pushBack(Node* head, int value) {
-    Node* last = getLast(head);
-    Node* tmp = (Node*)malloc(sizeof(Node));
-    tmp->value = value;
-    tmp->next = NULL;
-    last->next = tmp;
-}
 
-Node* getNth(Node* head, int n) {
-    int counter = 0;
-    while (counter < n && head) {
-        head = head->next;
-        counter++;
+
+
+void fromArray(Node** head, int* arr, size_t size) {
+    size_t i = size - 1;
+    if (arr == NULL || size == 0) {
+        return;
     }
-    return head;
+    do {
+        push(head, arr[i]);
+    } while (i-- != 0);
 }
 
-int main() {
 
+int getNextVal(Node** head, int n) {
+    if (n == 0) {
+        return 0;
+    }
+    else {
+        Node* prev = getNextHead(*head, n - 1);
+        Node* elm = prev->next;
+        int val = elm->value;
+        return val;
+    }
+}
+
+
+void printLinkedList(const Node* head) {
+    while (head) {
+        printf("%d ", head->value);
+        head = head->next;
+    }
+    printf("\n");
+}
+
+void main() {
+    Node* head = NULL;
+    int arr[100];
+    for (int i = 0; i < 100; i++) {
+        arr[i] = i;
+    }
+
+
+
+    printLinkedList(head);
+    int n;
+    printf_s("Please, input your integer number\n");
+    scanf_s("%d", &n);
+    fromArray(&head, arr, 2 * n);
+    int sum = 0;
+    int temp = (n * 2) - 1;
+    for (int i = 0; i < n * 2; i++) {
+            int a = getNextVal(&head, i);
+            int b = getNextVal(&head, temp);
+            printf_s("A of range equal: ( %d )\n", a);
+            printf_s("B of range equal: ( %d )\n", b);
+            int res = a * b;
+            printf_s("RES of range equal: ( %d )\n", res);
+            sum += res;
+            temp--;
+    }
+    printf_s("Sum of range equal: ( %d )\n", sum);
 }
