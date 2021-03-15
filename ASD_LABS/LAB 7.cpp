@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <malloc.h>
 
-
 typedef struct Node {
     int value;
     struct Node* next;
@@ -14,22 +13,6 @@ void push(Node** head, int data) {
     tmp->next = (*head);
     (*head) = tmp;
 }
-
-
-int pop(Node** head) {
-    Node* prev = NULL;
-    int val;
-    if (head == NULL) {
-        exit(-1);
-    }
-    prev = (*head);
-    val = prev->value;
-    (*head) = (*head)->next;
-    free(prev);
-    return val;
-}
-
-
 Node* getNextHead(Node* head, int n) {
     int counter = 0;
     while (counter < n && head) {
@@ -38,21 +21,6 @@ Node* getNextHead(Node* head, int n) {
     }
     return head;
 }
-
-
-Node* getLast(Node* head) {
-    if (head == NULL) {
-        return NULL;
-    }
-    while (head->next) {
-        head = head->next;
-    }
-    return head;
-}
-
-
-
-
 void fromArray(Node** head, int* arr, size_t size) {
     size_t i = size - 1;
     if (arr == NULL || size == 0) {
@@ -62,7 +30,6 @@ void fromArray(Node** head, int* arr, size_t size) {
         push(head, arr[i]);
     } while (i-- != 0);
 }
-
 
 int getNextVal(Node** head, int n) {
     if (n == 0) {
@@ -87,16 +54,15 @@ void printLinkedList(const Node* head) {
 
 void main() {
     Node* head = NULL;
-    int arr[100];
-    for (int i = 0; i < 100; i++) {
+    int arr[2000];
+    for (int i = 0; i < 1000; i++) {
         arr[i] = i;
     }
 
 
-
     printLinkedList(head);
     int n;
-    printf_s("Please, input your integer number\n");
+    printf_s("Input your N:\n");
     scanf_s("%d", &n);
     fromArray(&head, arr, 2 * n);
     int sum = 0;
@@ -104,12 +70,9 @@ void main() {
     for (int i = 0; i < n * 2; i++) {
             int a = getNextVal(&head, i);
             int b = getNextVal(&head, temp);
-            printf_s("A of range equal: ( %d )\n", a);
-            printf_s("B of range equal: ( %d )\n", b);
             int res = a * b;
-            printf_s("RES of range equal: ( %d )\n", res);
             sum += res;
             temp--;
     }
-    printf_s("Sum of range equal: ( %d )\n", sum);
+    printf_s("Sum = ( %d )\n", sum);
 }
