@@ -74,5 +74,5 @@ void main() {
             sum += res;
             temp--;
     }
-    printf_s("Sum = ( %d )\n", sum);
+    printf_s("Sum =  %d \n", sum);
 }
