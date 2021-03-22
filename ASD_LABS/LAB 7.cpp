@@ -31,6 +31,24 @@ void fromArray(Node** head, int* arr, size_t size) {
     } while (i-- != 0);
 }
 
+void deleteList(Node** head) {
+    Node* prev = NULL;
+    while ((*head)->next) {
+        prev = (*head);
+        (*head) = (*head)->next;
+        free(prev);
+    }
+    free(*head);
+}
+int size(Node* head) {
+    int i = 0;
+    while (head) {
+        head = head->next;
+        i++;
+    }
+    return i;
+}
+
 int getNextVal(Node** head, int n) {
     if (n == 0) {
         return 0;
@@ -58,21 +76,22 @@ void main() {
     for (int i = 0; i < 1000; i++) {
         arr[i] = i;
     }
-
-
-    printLinkedList(head);
     int n;
     printf_s("Input your N:\n");
     scanf_s("%d", &n);
     fromArray(&head, arr, 2 * n);
+    printLinkedList(head);
     int sum = 0;
-    int temp = (n * 2) - 1;
-    for (int i = 0; i < n * 2; i++) {
+    int temp = size(head) - 1;
+    printf_s("Size = ( %d )\n", size(head));
+    for (int i = 0; i < size(head); i++) {
             int a = getNextVal(&head, i);
             int b = getNextVal(&head, temp);
             int res = a * b;
             sum += res;
             temp--;
     }
-    printf_s("Sum =  %d \n", sum);
+    deleteList(&head);
+    printLinkedList(head);
+    printf_s("Sum = ( %d )\n", sum);
 }
