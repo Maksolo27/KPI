@@ -210,7 +210,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)
                         LineTo(hdc, xPos1[end], yPos1[end]);
 
                     }
-                    else if (simA[start][end] == 1 && A[end][start] == 1) {
+                    else if (A[start][end] == 1 && A[end][start] == 1) {
                         MoveToEx(hdc, xPos1[start], yPos1[start], NULL);
                         LineTo(hdc, xPos1[end] + xDif1 / 2 + (20 * divine1), yPos1[end] + yDif1 / 2 + (20 * divine1));
                         LineTo(hdc, xPos1[end], yPos1[end]);
