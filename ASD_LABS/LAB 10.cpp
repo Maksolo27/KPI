@@ -107,7 +107,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
         return 0;
 
     hWnd = CreateWindow(ProgName,
-        L"LAB 3. Powered by Gapiy D.E.",
+        L"LAB 5. KOVAL MAKSYM",
         WS_OVERLAPPEDWINDOW,
         100,
         100,
