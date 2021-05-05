@@ -3,12 +3,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include<conio.h>
-#define PI 3.14159265
 #define N 10
+#define PI 3.14159265
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
-wchar_t  ProgName[] = L"Лабораторна робота 5";
+wchar_t  ProgName[] = L"Лабораторна робота 3";
 
 struct queue {
     int array[N];
@@ -107,7 +107,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
         return 0;
 
     hWnd = CreateWindow(ProgName,
-        L"LAB 5 KOVAL MAKSYM",
+        L"LAB 5 MAKSYM",
         WS_OVERLAPPEDWINDOW,
         100,
         100,
@@ -127,33 +127,46 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
     return(lpMsg.wParam);
 }
 
-void drawEdge(HDC hdc, int B[N][N], int xPos[N], int yPos[N], int start, int end) {
+void drawEdge(HDC hdc, int B[N][N], int xPos1[N], int yPos1[N], int start, int end) {
     int dtx1 = 5, radius1 = 16, divine1 = 1, dx1, dy1, xDif1, yDif1;
-    float koef;
+    float koef1;
     HPEN BluePen1 = CreatePen(PS_SOLID, 2, RGB(50, 0, 255));
     HPEN BlackPen1 = CreatePen(PS_SOLID, 1, RGB(20, 20, 5));
     SelectObject(hdc, BlackPen1);
     for (int start = 0; start < N; start++) {
         for (int end = 0; end < N; end++) {
             if (B[start][end] == 1) {
-                xDif1 = xPos[start] - xPos[end];
-                yDif1 = yPos[start] - yPos[end];
-                koef = sqrt(xDif1 * xDif1 + yDif1 * yDif1) / radius1;
-                dx1 = xDif1 / koef;
-                dy1 = yDif1 / koef;
+                xDif1 = xPos1[start] - xPos1[end];
+                yDif1 = yPos1[start] - yPos1[end];
+                koef1 = sqrt(xDif1 * xDif1 + yDif1 * yDif1) / radius1;
+                dx1 = xDif1 / koef1;
+                dy1 = yDif1 / koef1;
                 if (start == end) {
-                    MoveToEx(hdc, xPos[end], yPos[end], NULL);
-                    LineTo(hdc, xPos[end] + 40, yPos[end] + 10);
-                    LineTo(hdc, xPos[end] + 40, yPos[end] + 40);
-                    LineTo(hdc, xPos[end] + 10, yPos[end] + 40);
-                    LineTo(hdc, xPos[end], yPos[end]);
+                    MoveToEx(hdc, xPos1[end], yPos1[end], NULL);
+                    LineTo(hdc, xPos1[end] + 40, yPos1[end] + 10);
+                    LineTo(hdc, xPos1[end] + 40, yPos1[end] + 40);
+                    LineTo(hdc, xPos1[end] + 10, yPos1[end] + 40);
+                    LineTo(hdc, xPos1[end], yPos1[end]);
 
                 }
                 else if (B[start][end] == 1 && B[end][start] == 1) {
-                    MoveToEx(hdc, xPos[start], yPos[start], NULL);
-                    LineTo(hdc, xPos[end] + xDif1 / 2 + (20 * divine1), yPos[end] + yDif1 / 2 + (20 * divine1));
-                    LineTo(hdc, xPos[end], yPos[end]);
+                    MoveToEx(hdc, xPos1[start], yPos1[start], NULL);
+                    LineTo(hdc, xPos1[end] + xDif1 / 2 + (20 * divine1), yPos1[end] + yDif1 / 2 + (20 * divine1));
+                    LineTo(hdc, xPos1[end], yPos1[end]);
                     divine1 = -divine1;
+                }
+                else {
+                    MoveToEx(hdc, xPos1[start], yPos1[start], NULL);
+                    if (yDif1 == 0 && abs(xDif1) > 300 && end <= 3) {
+                        dx1 = xDif1 / 2 / koef1;
+                        dy1 = (yDif1 - 35) / koef1;
+                    }
+                    else if (abs(xDif1) == 300 && abs(yDif1) == 300 && (end == 0 || end == 3)) {
+                        LineTo(hdc, xPos1[end], yPos1[end]);
+                        dx1 = xDif1 / 2 / koef1;
+                        dy1 = yDif1 / koef1;
+                    }
+                    LineTo(hdc, xPos1[end], yPos1[end]);
                 }
             }
         }
@@ -350,7 +363,7 @@ void DFS(HDC hdc, int xPos[N], int yPos[N], char* ellipseName[N], int A[N][N], i
                 counter++;
             }
             sprintf_s(text, 2, "%d", treeMatrix[i][j]);
-            TextOutA(hdc, 10 + 10 * j, 200 + 20 * i, text, 1);
+            TextOutA(hdc, 100 + 10 * j, 200 + 20 * i, text, 1);
         }
     }
 
@@ -391,12 +404,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) {
 
         SelectObject(hdc, BlackPen);
 
-
-        mulmr(A, (1.0 - 0 * 0.01 - 4 * 0.007 - 0.15));
+        
+        mulmr(A, (1.0 - 0 * 0.01 - 4 * 0.005 - 0.15));
         simMatrix(A, B);
-        //printMatrix(hdc, B);
-
-        //vertex coords
+        /*printMatrix(hdc, B);*/
 
         int R = 250;
         int step = 0;
@@ -420,11 +431,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) {
             drawVertex(hdc, xPos, yPos, ellipseName, i);
         }
 
-        //breadth + depth
         SelectObject(hdc, RedPen);
-        //BFS(hdc, xPos, yPos, ellipseName, B, 0);
 
-        DFS(hdc, xPos, yPos, ellipseName, B, 7);
+
+        //breadth
+        /*BFS(hdc, xPos, yPos, ellipseName, B, 0);*/
+
+
+        //depth
+        DFS(hdc, xPos, yPos, ellipseName, B, 9);
 
         EndPaint(hWnd, &ps);
         break;
