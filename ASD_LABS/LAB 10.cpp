@@ -8,7 +8,7 @@
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
-wchar_t  ProgName[] = L"Лабораторна робота 3";
+wchar_t  ProgName[] = L"Лабораторна робота 5";
 
 struct queue {
     int array[N];
@@ -107,7 +107,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
         return 0;
 
     hWnd = CreateWindow(ProgName,
-        L"LAB 5. KOVAL MAKSYM",
+        L"LAB 5 KOVAL MAKSYM",
         WS_OVERLAPPEDWINDOW,
         100,
         100,
@@ -155,19 +155,6 @@ void drawEdge(HDC hdc, int B[N][N], int xPos[N], int yPos[N], int start, int end
                     LineTo(hdc, xPos[end], yPos[end]);
                     divine1 = -divine1;
                 }
-                else {
-                    MoveToEx(hdc, xPos[start], yPos[start], NULL);
-                    if (yDif1 == 0 && abs(xDif1) > 300 && end <= 3) {
-                        dx1 = xDif1 / 2 / koef;
-                        dy1 = (yDif1 - 35) / koef;
-                    }
-                    else if (abs(xDif1) == 300 && abs(yDif1) == 300 && (end == 0 || end == 3)) {
-                        LineTo(hdc, xPos[end], yPos[end]);
-                        dx1 = xDif1 / 2 / koef;
-                        dy1 = yDif1 / koef;
-                    }
-                    LineTo(hdc, xPos[end], yPos[end]);
-                }
             }
         }
     }
@@ -206,7 +193,7 @@ void simMatrix(int A[N][N], int* B[N][N]) {
 void mulmr(int* matrix[N][N], float k) {
     int element;
     float num;
-    srand(0504);
+    srand(0507);
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
             num = (rand() / (float)RAND_MAX * 2) * k;
@@ -405,7 +392,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) {
         SelectObject(hdc, BlackPen);
 
 
-        mulmr(A, (1.0 - 0 * 0.01 - 4 * 0.005 - 0.15));
+        mulmr(A, (1.0 - 0 * 0.01 - 4 * 0.007 - 0.15));
         simMatrix(A, B);
         //printMatrix(hdc, B);
 
