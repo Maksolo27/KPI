@@ -1,54 +1,16 @@
-#include<windows.h>
-#include<math.h>
+#include <windows.h>
+#include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include<conio.h>
 #define N 10
 #define PI 3.14159265
+#define V N
+
+#define STRUCTSIZE N*N
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
-wchar_t  ProgName[] = L"Лабораторна робота 3";
-
-struct queue {
-    int array[N];
-    int front;
-    int last;
-};
-
-struct queue* init() {
-    struct queue* q = malloc(sizeof(struct queue));
-    q->front = -1;
-    q->last = -1;
-    return q;
-}
-
-int isEmpty(struct queue* q) {
-    if (q->last == -1)
-        return 1;
-    else
-        return 0;
-}
-
-void pushQueue(struct queue* q, int value) {
-    if (q->front == -1)
-        q->front = 0;
-    q->last++;
-    q->array[q->last] = value;
-}
-
-int popQueue(struct queue* q) {
-    int item;
-    if (isEmpty(q)) {
-        item = -1;
-    }
-    else {
-        item = q->array[q->front];
-        q->front++;
-        if (q->front > q->last) q->front = q->last = -1;
-    }
-    return item;
-}
+wchar_t  ProgName[] = L"Lab 6 Bondarchuk A."; //имя программы
 
 struct stack {
     int array[N];
@@ -68,7 +30,6 @@ void pushStack(struct stack* stack, int value) {
     }
 }
 
-
 void flush(struct stack* stack) {
     stack->top--;
 }
@@ -84,6 +45,33 @@ int isEmptyStack(struct stack* stack) {
         return 1;
     else
         return 0;
+}
+
+int DFS(int A[N][N], int start, int end) {//depth
+    int treeMatrix[N][N] = { 0 };
+    struct stack* s = initStack();
+    int visited[N] = { 0 };
+    int curVertex;
+    pushStack(s, start);
+    visited[start] = 1;
+    while (!isEmptyStack(s)) {
+        curVertex = top(s);
+        for (int i = 0; i < N; i++) {
+            if (A[curVertex][i]) {
+                if (i == end) return 1;
+                if (visited[i] == 0) {
+                    visited[i] = 1;
+                    treeMatrix[curVertex][i] = 1;
+                    pushStack(s, i);
+                    break;
+                }
+            }
+            if (i == N - 1) {
+                flush(s);
+            }
+        }
+    }
+    return 0;
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow)
@@ -107,12 +95,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
         return 0;
 
     hWnd = CreateWindow(ProgName,
-        L"LAB 5 MAKSYM",
+        L"Lab 6 Koval Maksym",
         WS_OVERLAPPEDWINDOW,
         100,
         100,
         1200,
-        800,
+        900,
         (HWND)NULL,
         (HMENU)NULL,
         (HINSTANCE)hInstance,
@@ -127,56 +115,51 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
     return(lpMsg.wParam);
 }
 
-void drawEdge(HDC hdc, int B[N][N], int xPos1[N], int yPos1[N], int start, int end) {
-    int dtx1 = 5, radius1 = 16, divine1 = 1, dx1, dy1, xDif1, yDif1;
-    float koef1;
-    HPEN BluePen1 = CreatePen(PS_SOLID, 2, RGB(50, 0, 255));
-    HPEN BlackPen1 = CreatePen(PS_SOLID, 1, RGB(20, 20, 5));
-    SelectObject(hdc, BlackPen1);
-    for (int start = 0; start < N; start++) {
-        for (int end = 0; end < N; end++) {
-            if (B[start][end] == 1) {
-                xDif1 = xPos1[start] - xPos1[end];
-                yDif1 = yPos1[start] - yPos1[end];
-                koef1 = sqrt(xDif1 * xDif1 + yDif1 * yDif1) / radius1;
-                dx1 = xDif1 / koef1;
-                dy1 = yDif1 / koef1;
-                if (start == end) {
-                    MoveToEx(hdc, xPos1[end], yPos1[end], NULL);
-                    LineTo(hdc, xPos1[end] + 40, yPos1[end] + 10);
-                    LineTo(hdc, xPos1[end] + 40, yPos1[end] + 40);
-                    LineTo(hdc, xPos1[end] + 10, yPos1[end] + 40);
-                    LineTo(hdc, xPos1[end], yPos1[end]);
-
-                }
-                else if (B[start][end] == 1 && B[end][start] == 1) {
-                    MoveToEx(hdc, xPos1[start], yPos1[start], NULL);
-                    LineTo(hdc, xPos1[end] + xDif1 / 2 + (20 * divine1), yPos1[end] + yDif1 / 2 + (20 * divine1));
-                    LineTo(hdc, xPos1[end], yPos1[end]);
-                    divine1 = -divine1;
-                }
-                else {
-                    MoveToEx(hdc, xPos1[start], yPos1[start], NULL);
-                    if (yDif1 == 0 && abs(xDif1) > 300 && end <= 3) {
-                        dx1 = xDif1 / 2 / koef1;
-                        dy1 = (yDif1 - 35) / koef1;
-                    }
-                    else if (abs(xDif1) == 300 && abs(yDif1) == 300 && (end == 0 || end == 3)) {
-                        LineTo(hdc, xPos1[end], yPos1[end]);
-                        dx1 = xDif1 / 2 / koef1;
-                        dy1 = yDif1 / koef1;
-                    }
-                    LineTo(hdc, xPos1[end], yPos1[end]);
-                }
+void paintLines(HDC hdc, int B[N][N], int nx[N], int ny[N], int start, int end) {
+    int xDif = nx[start] - nx[end];
+    int yDif = ny[start] - ny[end];
+    char text[5];
+    sprintf_s(text, sizeof(text), "%d", B[start][end]);
+    if (B[start][end]) {
+        if (start == end) {//LOOP check
+            MoveToEx(hdc, nx[end], ny[end], NULL);
+            Arc(hdc, nx[end], ny[end] - 40, nx[end] + 40, ny[end], nx[end] + 10, ny[end], nx[end], ny[end] - 10);
+            TextOutA(hdc, nx[end] + 20, ny[end] - 20, text, B[start][end] < 100 ? 2 : 3);
+        }
+        else {
+            MoveToEx(hdc, nx[start], ny[start], NULL);
+            if ((ny[start] == ny[end]) && abs(nx[start] - nx[end]) > 300) {
+                LineTo(hdc, nx[end] + xDif / 2, ny[end] - 35);
+                LineTo(hdc, nx[end], ny[end]);
+                TextOutA(hdc, nx[end] + xDif / 2 - 40, ny[end] - 50, text, B[start][end] < 100 ? 2 : 3);
+            }
+            else if (yDif == 0 && abs(xDif) > 300 && end <= 3) {
+                LineTo(hdc, nx[end] + xDif / 2, ny[end] - 35);
+                LineTo(hdc, nx[end], ny[end]);
+                TextOutA(hdc, nx[end] - 20, ny[end] + yDif / 2 + 50, text, B[start][end] < 100 ? 2 : 3);
+            }
+            else if (xDif == 0 && abs(yDif) > 300) {
+                LineTo(hdc, nx[end] - 30, ny[end] + yDif / 2);
+                LineTo(hdc, nx[end], ny[end]);
+                TextOutA(hdc, nx[end] - 40, ny[end] + yDif / 2 + 13, text, B[start][end] < 100 ? 2 : 3);
+            }
+            else if (abs(xDif) == 300 && abs(yDif) == 300 && (end == 0 || end == 3)) {
+                LineTo(hdc, nx[end] + xDif / 2, ny[end] + yDif / 1);
+                LineTo(hdc, nx[end], ny[end]);
+                TextOutA(hdc, nx[end] + xDif / 2 - 20, ny[end] + yDif / 2, text, B[start][end] < 100 ? 2 : 3);
+            }
+            else {
+                LineTo(hdc, nx[end], ny[end]);
+                TextOutA(hdc, nx[end] + xDif / 5 - 20, ny[end] + yDif / 5, text, B[start][end] < 100 ? 2 : 3);
             }
         }
     }
 }
 
-void drawVertex(HDC hdc, int xPos[N], int yPos[N], char* ellipseName[N], int i) {
+void paintVertex(HDC hdc, int nx[N], int ny[N], char* nn[N], int i) {
     int dtx = 5, radius = 16;
-    Ellipse(hdc, xPos[i] - radius, yPos[i] - radius, xPos[i] + radius, yPos[i] + radius);
-    TextOut(hdc, xPos[i] - dtx, yPos[i] - 8, ellipseName[i], 1);
+    Ellipse(hdc, nx[i] - radius, ny[i] - radius, nx[i] + radius, ny[i] + radius);
+    TextOut(hdc, nx[i] - dtx, ny[i] - 8, nn[i], 1);
 }
 
 void printMatrix(HDC hdc, int A[N][N]) {
@@ -184,26 +167,24 @@ void printMatrix(HDC hdc, int A[N][N]) {
 
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
-            sprintf_s(text, 2, "%d", A[i][j]);
-            TextOutA(hdc, 5 + 25 * j, 400 + 20 * i, text, 1);
+            sprintf_s(text, sizeof(text), "%d", A[i][j]);
+            TextOutA(hdc, 5 + 30 * j, 600 + 20 * i, text, A[i][j] < 100 ? 2 : 3);
         }
     }
 }
 
-//MATRIX SIMETRICAL
 void simMatrix(int A[N][N], int* B[N][N]) {
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
-            if (A[i][j] == 1) {
-                B[j][i] = 1;
-                B[i][j] = 1;
+            if (A[i][j]) {
+                B[j][i] = A[i][j];
+                B[i][j] = A[i][j];
             }
         }
     }
 }
 
-//GENERATE MATRIX
-void mulmr(int* matrix[N][N], float k) {
+void generateMtx(int* matrix[N][N], float k) {
     int element;
     float num;
     srand(0507);
@@ -217,161 +198,88 @@ void mulmr(int* matrix[N][N], float k) {
     }
 }
 
-void BFS(HDC hdc, int xPos[N], int yPos[N], char* ellipseName[N], int A[N][N], int start) {//breadth
-    struct queue* q = init();
-    int visited[N] = { 0,0,0,0,0,0,0,0,0,0 };
-    int distance[N][N] = {
-        { 0,0,0,0,0,0,0,0,0,0 },
-        { 0,0,0,0,0,0,0,0,0,0 },
-        { 0,0,0,0,0,0,0,0,0,0 },
-        { 0,0,0,0,0,0,0,0,0,0 },
-        { 0,0,0,0,0,0,0,0,0,0 },
-        { 0,0,0,0,0,0,0,0,0,0 },
-        { 0,0,0,0,0,0,0,0,0,0 },
-        { 0,0,0,0,0,0,0,0,0,0 },
-        { 0,0,0,0,0,0,0,0,0,0 },
-        { 0,0,0,0,0,0,0,0,0,0 }
-    };
-    int treeMatrix[N][N] = {
-        { 0,0,0,0,0,0,0,0,0,0 },
-        { 0,0,0,0,0,0,0,0,0,0 },
-        { 0,0,0,0,0,0,0,0,0,0 },
-        { 0,0,0,0,0,0,0,0,0,0 },
-        { 0,0,0,0,0,0,0,0,0,0 },
-        { 0,0,0,0,0,0,0,0,0,0 },
-        { 0,0,0,0,0,0,0,0,0,0 },
-        { 0,0,0,0,0,0,0,0,0,0 },
-        { 0,0,0,0,0,0,0,0,0,0 },
-        { 0,0,0,0,0,0,0,0,0,0 }
-    };
-    int k = 1, a = 0, dist = 0, curVertex, counter = 0;
-    char text[4];
-    pushQueue(q, start);
-    visited[start] = 1;
-    distance[dist][start] = 1;
-    drawVertex(hdc, xPos, yPos, ellipseName, start);
-    sprintf_s(text, 2, "%d", a);
-    TextOutA(hdc, xPos[start] - 20, yPos[start] + 15, text, 1);
-    while (!isEmpty(q)) {
-        curVertex = popQueue(q);
-        for (int i = 0; i < N; i++) {
-            if (A[curVertex][i] && visited[i] == 0) {
-                k++;
-                visited[i] = k;
-                pushQueue(q, i);
-                drawEdge(hdc, A, xPos, yPos, curVertex, i);
-                drawVertex(hdc, xPos, yPos, ellipseName, i);
-                system("pause");
-                system("cls");
-                dist = a + 1;
-                distance[dist][i] = 1;
-                treeMatrix[curVertex][i] = 1;
-                sprintf_s(text, 2, "%d", dist);
-                TextOutA(hdc, xPos[i] - 20, yPos[i] + 15, text, 1);
-            }
-        }
-        a++;
-    }
-
+void weightMatrix(HDC hdc, int A[N][N], int* W[N][N]) {
+    int num;
+    int Wt[N][N];
+    int B[N][N];
+    int C[N][N];
+    int D[N][N];
+    //Wt + B
     for (int i = 0; i < N; i++) {
-        drawVertex(hdc, xPos, yPos, ellipseName, i);
-        counter = 0;
         for (int j = 0; j < N; j++) {
-            if (distance[i][j]) {
-                sprintf_s(text, 3, "L%d", i);
-                TextOutA(hdc, 10, 550 + 25 * i, text, 2);
-                sprintf_s(text, 2, "%d", j);
-                TextOutA(hdc, 30 + 20 * counter, 550 + 25 * i, text, 1);
-                counter++;
-            }
-            sprintf_s(text, 2, "%d", treeMatrix[i][j]);
-            TextOutA(hdc, 10 + 10 * j, 200 + 20 * i, text, 1);
+            num = roundf((rand() / (float)RAND_MAX * 2) * 100) * A[i][j];
+            Wt[i][j] = num;
+            if (num == 0) B[i][j] = 0;
+            else B[i][j] = 1;
         }
     }
+    //C+D
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            if (B[i][j] != B[j][i]) C[i][j] = 1;
+            else C[i][j] = 0;
+
+            if (B[i][j] == B[j][i] && B[i][j] == 1 && j <= i) D[i][j] = 1;
+            else D[i][j] = 0;
+        }
+    }
+    //ResultMatrix
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            Wt[i][j] = (C[i][j] + D[i][j]) * Wt[i][j];
+        }
+    }
+    simMatrix(Wt, W);
 }
 
-void DFS(HDC hdc, int xPos[N], int yPos[N], char* ellipseName[N], int A[N][N], int start) {//depth
-    int distance[N][N] = {
-    { 0,0,0,0,0,0,0,0,0,0 },
-    { 0,0,0,0,0,0,0,0,0,0 },
-    { 0,0,0,0,0,0,0,0,0,0 },
-    { 0,0,0,0,0,0,0,0,0,0 },
-    { 0,0,0,0,0,0,0,0,0,0 },
-    { 0,0,0,0,0,0,0,0,0,0 },
-    { 0,0,0,0,0,0,0,0,0,0 },
-    { 0,0,0,0,0,0,0,0,0,0 },
-    { 0,0,0,0,0,0,0,0,0,0 },
-    { 0,0,0,0,0,0,0,0,0,0 }
-    };
-    int treeMatrix[N][N] = {
-    { 0,0,0,0,0,0,0,0,0,0 },
-    { 0,0,0,0,0,0,0,0,0,0 },
-    { 0,0,0,0,0,0,0,0,0,0 },
-    { 0,0,0,0,0,0,0,0,0,0 },
-    { 0,0,0,0,0,0,0,0,0,0 },
-    { 0,0,0,0,0,0,0,0,0,0 },
-    { 0,0,0,0,0,0,0,0,0,0 },
-    { 0,0,0,0,0,0,0,0,0,0 },
-    { 0,0,0,0,0,0,0,0,0,0 },
-    { 0,0,0,0,0,0,0,0,0,0 }
-    };
-    struct stack* s = initStack();
-    int visited[N] = { 0,0,0,0,0,0,0,0,0,0 };
-    int k = 1, dist = 0, curVertex, counter = 0, checker = 1;
-    char text[4];
-    pushStack(s, start);
-    visited[start] = 1;
-    distance[dist][start] = 1;
-    drawVertex(hdc, xPos, yPos, ellipseName, start);
-    sprintf_s(text, 2, "%d", dist);
-    TextOutA(hdc, xPos[start] - 20, yPos[start] + 15, text, 1);
-    while (!isEmptyStack(s)) {
-        curVertex = top(s);
+int cycle(int start, int end, int visited[N], int A[N][N]) {
+    if (start == end) return 1;
+    if (visited[start] && visited[end]) return 1;
+    return 0;
+}
+
+void prim(HDC hdc, int A[N][N], int xPos[N], int yPos[N], char* ellipseName[N], int cur) {
+    int visitedEdges = 0, totalWeight = 0, start, end;
+    char text[5];
+    int treeMatrix[N][N] = { 0 };
+    int visitedVertex[N] = { 0 };
+    visitedVertex[cur] = 1;
+    while (visitedEdges < N - 1) {
+        int num = 200;
         for (int i = 0; i < N; i++) {
-            if (A[curVertex][i]) {
-                if (visited[i] == 0) {
-                    k++;
-                    dist++;
-                    visited[i] = k;
-                    distance[dist][i] = 1;
-                    treeMatrix[curVertex][i] = 1;
-                    pushStack(s, i);
-                    drawEdge(hdc, A, xPos, yPos, curVertex, i);
-                    drawVertex(hdc, xPos, yPos, ellipseName, i);
-                    sprintf_s(text, 2, "%d", dist);
-                    TextOutA(hdc, xPos[i] - 20, yPos[i] + 15, text, 1);
-                    system("pause");
-                    system("cls");
-                    break;
+            if (!visitedVertex[i]) continue;
+            for (int j = i; j < N; j++) {
+                if (A[i][j] && A[i][j] < num) {
+                    num = A[i][j];
+                    start = i;
+                    end = j;
                 }
             }
-            if (i == N - 1) {
-                flush(s);
-                dist--;
-            }
+        }
+        if (cycle(start, end, visitedVertex, treeMatrix) && DFS(treeMatrix, start, end)) {
+            A[start][end] = 0;
+        }
+        else {
+            sprintf_s(text, sizeof(text), "%d", num);
+            TextOutA(hdc, 5, 40, text, 2);
+            paintLines(hdc, A, xPos, yPos, start, end);
+            paintVertex(hdc, xPos, yPos, ellipseName, start);
+            paintVertex(hdc, xPos, yPos, ellipseName, end);
+            totalWeight += num;
+            treeMatrix[start][end] = num;
+            treeMatrix[end][start] = num;
+            A[start][end] = 0;
+            visitedVertex[start] = 1;
+            visitedVertex[end] = 1;
+            visitedEdges++;
+            system("pause");
+            system("cls");
         }
     }
-    for (int i = 0; i < N; i++) {
-        drawVertex(hdc, xPos, yPos, ellipseName, i);
-        counter = 0;
-        for (int j = 0; j < N; j++) {
-            if (distance[i][j]) {
-                sprintf_s(text, 3, "L%d", i);
-                TextOutA(hdc, 10, 450 + 25 * i, text, 2);
-                sprintf_s(text, 2, "%d", j);
-                TextOutA(hdc, 30 + 20 * counter, 450 + 25 * i, text, 1);
-                counter++;
-            }
-            sprintf_s(text, 2, "%d", treeMatrix[i][j]);
-            TextOutA(hdc, 100 + 10 * j, 200 + 20 * i, text, 1);
-        }
-    }
-
-    for (int i = 0; i < N; i++) {
-        drawVertex(hdc, xPos, yPos, ellipseName, i);
-    }
+    sprintf_s(text, sizeof(text), "%d", totalWeight);
+    TextOutA(hdc, 5, 40, text, 3);
+    printMatrix(hdc, treeMatrix);
 }
-
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) {
     HDC hdc;
@@ -381,6 +289,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) {
     case WM_PAINT:
         hdc = BeginPaint(hWnd, &ps);
         int A[N][N];
+        int W[N][N] = { 0 };
         int B[N][N] = {
             {0,0,0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0,0,0},
@@ -394,52 +303,47 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) {
             {0,0,0,0,0,0,0,0,0,0}
         };
         int visited[N] = { 0,0,0,0,0,0,0,0,0,0 };
-        char* ellipseName[10] = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
-        int xPos[10];
-        int yPos[10];
-        int startX = 100, divine = -1;
-        HPEN BluePen = CreatePen(PS_SOLID, 2, RGB(50, 0, 255));
+        char* nn[10] = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+        int nx[N + 1] = { 250 },
+            ny[N + 1] = { 75 };
+
         HPEN BlackPen = CreatePen(PS_SOLID, 1, RGB(20, 20, 5));
         HPEN RedPen = CreatePen(PS_SOLID, 2, RGB(250, 0, 0));
+        HPEN GreenPen = CreatePen(PS_SOLID, 2, RGB(0, 255, 0));
 
         SelectObject(hdc, BlackPen);
 
-        
-        mulmr(A, (1.0 - 0 * 0.01 - 4 * 0.005 - 0.15));
+        generateMtx(A, (1.0 - 0 * 0.01 - 7 * 0.005 - 0.05));
         simMatrix(A, B);
-        /*printMatrix(hdc, B);*/
+        weightMatrix(hdc, A, W);
+       //printMatrix(hdc, W);
 
+        //Vertex coordinates
         int R = 250;
         int step = 0;
         int Centre1_X = 300, Centre1_Y = 300;
-        xPos[9] = Centre1_X;
-        yPos[9] = Centre1_Y;
+        nx[9] = Centre1_X;
+        ny[9] = Centre1_Y;
         for (int vertex = 0; vertex < N - 1; vertex++) {
-            xPos[vertex] = Centre1_X + R * cos(step * PI / 180);
-            yPos[vertex] = Centre1_Y + R * sin(step * PI / 180);
+            nx[vertex] = Centre1_X + R * cos(step * PI / 180);
+            ny[vertex] = Centre1_Y + R * sin(step * PI / 180);
             step += 360 / N + 4;
         }
-        //draw graph edges
+
+        //draw edges of the graph
         for (int start = 0; start < N; start++) {
             for (int end = start; end < N; end++) {
-                drawEdge(hdc, B, xPos, yPos, start, end);
+                paintLines(hdc, W, nx, ny, start, end);
             }
         }
-        //draw vertex
-        SelectObject(hdc, BluePen);
+        //draw verteces
+        SelectObject(hdc, RedPen);
         for (int i = 0; i < N; i++) {
-            drawVertex(hdc, xPos, yPos, ellipseName, i);
+            paintVertex(hdc, nx, ny, nn, i);
         }
 
-        SelectObject(hdc, RedPen);
-
-
-        //breadth
-        /*BFS(hdc, xPos, yPos, ellipseName, B, 0);*/
-
-
-        //depth
-        DFS(hdc, xPos, yPos, ellipseName, B, 9);
+        SelectObject(hdc, GreenPen);
+        prim(hdc, W, nx, ny, nn, 0);
 
         EndPaint(hWnd, &ps);
         break;
